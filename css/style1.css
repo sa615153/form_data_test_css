@@ -1,0 +1,15 @@
+p {color: blue}
+strong{color:red; text-decoration: underline;}
+
+.key {
+  color: green;
+}
+
+#principal {
+  font-weight: bolder;
+}
+
+#data-table-1 td:first-child {font-weight: bolder;}
+#data-table-1 td:first-child + td {font-family: monospace;}
+
+
