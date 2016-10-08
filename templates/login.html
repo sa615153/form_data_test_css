@@ -10,7 +10,7 @@
         {{form.hidden_tag()}}
         <p>
             Please enter your Name:<br>
-            {{form.user_name}}<br>
+            {{form.user_name(class = "css")}}<br>
             <!--验证过程出错信息-->
             {% for error in form.errors.name %}
             <span style="color: red;">[{{ error }}]</span>

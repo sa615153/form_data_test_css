@@ -1,5 +1,16 @@
-p {color: blue}
-strong{color:red; text-decoration: underline;}
+p {
+color: blue;
+font: italic  125%/125%  "Comic Sans MS", cursive;
+}
+
+
+
+strong{
+color:red;
+ text-decoration: underline;
+ font:italic 200% serif  cursive;
+ background-color: #ddf;
+ }
 
 .key {
   color: green;
@@ -11,5 +22,51 @@ strong{color:red; text-decoration: underline;}
 
 #data-table-1 td:first-child {font-weight: bolder;}
 #data-table-1 td:first-child + td {font-family: monospace;}
+
+
+
+.ref:before {
+  font-weight: bold;
+  color: navy;
+  content: "Reference: ";
+}
+
+a.glossary:after {content: " " url("../images/glossary.jpg");}
+
+#sidebar-box {background: url("../images/glossary.jpg") no-repeat;}
+
+body {
+background: url("../images/Blue-rule.png");
+}
+
+
+p:before {
+content:url("../images/Yellow-pin.png")
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -1,0 +1,59 @@
+ul, #numbered {
+  border: 1em solid #69b;
+  padding-right:1em;
+  padding-left:1em;
+}
+
+h3.start{
+counter-reset:mynum;
+}
+
+p.order:before{
+content :counter(mynum)": ";
+counter-increment: mynum;
+}
+
+
+
+
+h3.secondh3 {
+  border-top: 1px solid gray;
+  text-align: center;
+}
+
+ul.ocean {
+text-align: left
+}
+
+ul, #numbered {float: left;}
+h3.secondh3 {clear: center;}
+
+
+
+#parent-div {
+  position: fixed;
+  font: bold 200% sans-serif;
+  clear:left;
+}
+
+#forward, #back {
+  position: absolute;
+  margin:0px; /* no margin around the elements */
+  top: 0px; /* distance from top */
+  left: 0px; /* distance from left */
+}
+
+#forward {
+  color: blue;
+}
+
+#back {
+  color: red;
+}
+
+
+#fixed-pin  {
+  position:fixed;
+  top: 3px;
+  right: 3px;
+}
