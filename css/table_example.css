@@ -32,15 +32,25 @@
 
 
 /* header */
-#demo-table > thead > tr:first-child > th {
+
+/*
+<thead>
+        <tr>
+          <th></th>
+          <th>Area</th>
+          <th>Mean depth</th>
+        </tr>
+*/
+#demo-table > thead > tr:first-child > th { /*table 下的任一子元素thead下的任一子元素ｔｒ的大哥的任一ｔｈ*/
   text-align: center;
   color: blue;
 }
 
-#demo-table > thead > tr + tr > th {
+#demo-table > thead > tr + tr > th {/*table 下的ｔｈｅａｄ下的任一ｔｒ的任一下一个兄弟的任一ｔｈ*/
   font-style: italic;
   color: gray;
 }
+
 
 /* fix size of superscript */
 #demo-table sup {
@@ -48,6 +58,7 @@
 }
 
 /* body */
+/**/
 #demo-table td {
   background-color: #cef;
   padding:.5em .5em .5em 3em;
@@ -70,7 +81,7 @@
 #demo-table tfoot th:after {
   content: ":";
 }
-
+/**/
 #demo-table > tfoot td {
   background-color: #cee;
 }

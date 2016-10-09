@@ -1,0 +1,8 @@
+/*** Print sample ***/
+@import url("onlyprint.css");
+/* defaults  for screen */
+#print-head,
+#print-foot {
+  display: none;
+  }
+
