@@ -1,3 +1,4 @@
+/*大小单位*/
 ul, #numbered {
   border: 1em solid #69b;
   padding-right:1em;
@@ -15,7 +16,7 @@ counter-increment: mynum;
 
 
 
-
+/*文本布局*/
 h3.secondh3 {
   border-top: 1px solid gray;
   text-align: center;
@@ -24,20 +25,20 @@ h3.secondh3 {
 ul.ocean {
 text-align: left
 }
-
+/*浮动*/
 ul, #numbered {float: left;}
 h3.secondh3 {clear: center;}
 
 
-
+/*位置*/
 #parent-div {
-  position: fixed;
+  position: relative;/*移动*/
   font: bold 200% sans-serif;
-  clear:left;
+
 }
 
 #forward, #back {
-  position: absolute;
+  position: absolute;/*相对父元素绝对位置*/
   margin:0px; /* no margin around the elements */
   top: 0px; /* distance from top */
   left: 0px; /* distance from left */
@@ -52,8 +53,14 @@ h3.secondh3 {clear: center;}
 }
 
 
+
+/*位置*/
 #fixed-pin  {
-  position:fixed;
+  position:fixed;/*固定在窗口某处*/
   top: 3px;
   right: 3px;
 }
+
+
+
+

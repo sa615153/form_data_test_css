@@ -1,0 +1,14 @@
+#demo-table > caption {
+  caption-side: bottom;
+  font-style: italic;
+  text-align: right;
+}
+/*empty-cells show doesn't work if no <td></td>*/
+.t1{
+empty-cells: show;
+}
+
+td, th {
+  border: 1px solid #999;
+  padding: 0.5rem;
+}
