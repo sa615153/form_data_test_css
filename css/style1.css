@@ -6,10 +6,10 @@ font: italic  125%/125%  "Comic Sans MS", cursive;
 
 
 strong{
-color:red;
+color:#c00;
  text-decoration: underline;
  font:italic 200% serif  cursive;
- background-color: #ddf;
+ background-color:  #f2f6fb;
  }
 
 .key {
@@ -36,7 +36,7 @@ a.glossary:after {content: " " url("../images/glossary.jpg");}
 #sidebar-box {background: url("../images/glossary.jpg") no-repeat;}
 
 body {
-background: url("../images/Blue-rule.png");
+/*background: url("../images/Blue-rule.png");*/
 }
 
 
