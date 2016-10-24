@@ -59,6 +59,8 @@ class Model(dict):
         sql = 'insert into %s (%s) values (%s)' % (self.__table__, ','.join(fields), ','.join(params))          #
         print('SQL: %s' % sql)                                                                                  #
         print('ARGS: %s' % str(args))                                                                           #
+
+
                                                                                                                 #
 class User(Model):                                                                                             #
     # 定义类的属性到列的映射：                                                                                  #
@@ -72,4 +74,4 @@ u.id = 1  # ####################################################################
 u.save()
 
 # name = stringfield
-# 注意不是ｓｔｒｉｎｇ　ｎａｍｅ　＝　张三，这不是普通的成员变量声明，而是制定类型，将类型在某处存下来
+# 注意不是string name　=　张三，这不是普通的成员变量声明，而是制定类型，将类型在某处存下来
