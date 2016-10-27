@@ -2,11 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="048840c6-86a3-4ecd-a7dc-10e76bdde025" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/experiment/dict.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/experiment/metaclass/type.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/experiment/testjson.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/experiment/metaclass/decorator_meta_func.py" afterPath="$PROJECT_DIR$/experiment/metaclass/decorator_meta_class.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/experiment/metaclass/patch.py" afterPath="$PROJECT_DIR$/experiment/metaclass/patch_meta_func.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="form_data_test.iws" />
@@ -631,7 +626,14 @@
       <option name="project" value="LOCAL" />
       <updated>1477307701849</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="10.24">
+      <created>1477553516050</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1477553516050</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
