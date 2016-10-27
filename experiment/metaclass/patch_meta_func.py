@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# coding :utf-8
+# -*- coding: utf-8 -*-
 
 def monkey_patch(name, bases, dct):
     assert len(bases) == 1
@@ -26,8 +26,11 @@ def main():
     pa = PatchA()
     pa.patcha_method()
     pa.a()
+    print type(pa)  # 新对象是ｂａｓｅ对象
     print dir(pa)
     print dir(PatchA)
+    print dir(A)  # ｂａｓｅ已变
+
 
 
 if __name__ == '__main__':
