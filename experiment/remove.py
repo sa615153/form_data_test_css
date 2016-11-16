@@ -16,22 +16,26 @@ list1 = [a1,a2,a3,a4,a5]
 print "list1"
 for i in list1:
     print i
+    print i.a
 
 list2 = filter(lambda x:True if x.a<3 else False,list1)
-print "after filter list2"
+print "*********************after filter list2****************************"
 for i in list2:
     print i
+    print i.a
 
 
 
 print "******************"
 list1.remove(list2[0])
 
-print "after remove list1:"
+print "***************list1:  after remove list2[0] from list1:********************"
 for i in list1:
     print i
+    print i.a
 
 
-print "after remove list2:"
+print "***************list2:  after remove list2[0] from list1:********************"
 for i in list2:
     print i
+    print i.a
