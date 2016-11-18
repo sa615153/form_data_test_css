@@ -76,13 +76,58 @@ print  'abcd'[2]
 print "\n\n\n"
 
 import os
-def tree(top):
-    for path, names, fnames in os.walk(top):
-        for fname in fnames:
-            yield os.path.join(path, fname)
+# def tree(top):
+#     for path, names, fnames in os.walk(top):
+#         for fname in fnames:
+#             yield os.path.join(path, fname)
+#
+# for name in tree('C:\Users\jpang3\Downloads'):
+#     print name
 
-for name in tree('C:\Users\jpang3\Downloads'):
-    print name
 
 
+t = os.walk('C:\Users\jpang3\Downloads')
+print t
+print type(t)
 
+lt = list(t)
+print lt
+
+
+print "\n\n\n"
+
+#iter and generator
+#the first try
+#=================================
+i = iter('abcd')
+print i.next()
+print i.next()
+print i.next()
+
+s = {'one':1,'two':2,'three':3}
+print s
+m = iter(s)
+print m.next()
+print m.next()
+print m.next()
+
+print "----------------------------"
+a = [1, 2, 3]
+b = ['a', 'b', 'c']
+print zip(a, b)
+print "unzip"
+z = zip(a, b)
+print zip(*z)
+
+print "----------------------------"
+a = [1, 2, 3, 4, 5, 6]
+
+print a*3
+
+print iter(a)
+print [iter(a)]
+print [iter(a)]*3
+print ([iter(a)]*3)
+
+print zip(*([iter(a)]*3))  # three iterators
+print zip(*([iter(a)]*2))  # two iterators

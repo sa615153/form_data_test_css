@@ -39,3 +39,6 @@ print "***************list2:  after remove list2[0] from list1:*****************
 for i in list2:
     print i
     print i.a
+
+
+# list2[0]===list1[0]===address
