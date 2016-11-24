@@ -1,0 +1,391 @@
+{% extends "layout.html" %}
+
+{% block head%}
+
+
+{% block styles%}
+<!--<link href="{{ url_for('user.static',filename='css/lib/bootstrap.css') }}" rel="stylesheet" type="text/css">-->
+    <link href="/user/static/css/task.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="{{ url_for('user.static',filename='js/lib/jquery-3.1.1.min.js') }}"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<!--<script src="{{ url_for('user.static',filename='js/lib/bootstrap.js') }}"></script>-->
+
+<style>
+  #addpanel{
+  display:block;
+  }
+  @keyframes blink{
+    0%{opacity: 1;}
+    50%{opacity: 1;}
+    50.01%{opacity: 0;}
+    100%{opacity: 0;}
+  }
+
+
+  @-webkit-keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 1; }
+      50.01% { opacity: 0; }
+      100% { opacity: 0; }
+  }
+
+  @-moz-keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 1; }
+      50.01% { opacity: 0; }
+      100% { opacity: 0; }
+  }
+
+  @-ms-keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 1; }
+      50.01% { opacity: 0; }
+      100% { opacity: 0; }
+  }
+
+  @-o-keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 1; }
+      50.01% { opacity: 0; }
+      100% { opacity: 0; }
+  }
+
+
+  .blink{
+      animation: blink .75s linear infinite;
+      -webkit-animation: blink .75s linear infinite;
+      -moz-animation: blink .75s linear infinite;
+      -ms-animation: blink .75s linear infinite;
+      -o-animation: blink .75s linear infinite;
+  }
+</style>
+{% endblock %}
+
+{% endblock %}
+{% block body_attribs %}{% endblock body_attribs %}
+{% block content %}
+<div class="container" style="width:1200px">
+  <div class="row">
+    <div class="col-md-6 jumbotron" style="padding-left:40px;padding-right:40px">
+      <div class="" id="task">
+        <h4 id="track">{{task.track_number}}</h4>
+        <pre>{{task.comments}}</pre>
+        <!--<marquee  scrollamount="2" direction="left" >-->
+          <!--<div id="gitlog" ></div>-->
+        <!--</marquee >-->
+        <div class="btn-group">
+        <button class="btn  btn-default glyphicon glyphicon-list"   style="margin-right:3px"  title="Show Details" id="taskdetail" ></button>
+          {% if isself == True %}
+        <button class="btn  btn-default glyphicon glyphicon-plus-sign"  title="Add Subtasks" style="margin-right:3px" id="addsub" data-toggle="modal" id="add" data-target="#addModal"></button>
+        <button class="btn  btn-default glyphicon glyphicon-hand-up"  title="Add to Test2 Queue" style="margin-right:3px" id="addtest2" onclick="addToTest2()"></button>
+        <!--<button class="btn btn-danger" style="margin-right:3px" id="cancel" onclick="deleteTask()">cancel</button>-->
+        <button class="btn  btn-default glyphicon glyphicon-fast-forward"  title="Set Urgent" style="margin-right:3px"  id="urgent" onclick="setUrgent()"></button>
+        <button type="button" class="btn  btn-danger glyphicon glyphicon-trash"  title="Delete Task" style="margin-right:3px" data-toggle="modal" id="cancel" data-target="#cancelModal"></button>
+        <button type="button" class="btn  btn-danger glyphicon glyphicon-repeat" title="Rerun Task" style="margin-right:3px" data-toggle="modal" id="rerun" data-target="#rerunModal"></button>
+          {% else %}
+        <button class="btn  btn-default glyphicon glyphicon-plus-sign"  title="Add Subtasks" style="margin-right:3px" id="addsub" data-toggle="modal" id="add" data-target="#addModal" disabled></button>
+        <button class="btn  btn-default glyphicon glyphicon-hand-up"  title="Add to Test2 Queue" style="margin-right:3px" id="addtest2" onclick="addToTest2()" disabled></button>
+        <!--<button class="btn btn-danger" style="margin-right:3px" id="cancel" onclick="deleteTask()">cancel</button>-->
+        <button class="btn  btn-default glyphicon glyphicon-fast-forward"  title="Set Urgent" style="margin-right:3px"  id="urgent" onclick="setUrgent()" disabled></button>
+        <button type="button" class="btn  btn-danger glyphicon glyphicon-trash"  title="Delete Task" style="margin-right:3px" data-toggle="modal" id="cancel" data-target="#cancelModal" disabled></button>
+        <button type="button" class="btn  btn-danger glyphicon glyphicon-repeat" title="Rerun Task" style="margin-right:3px" data-toggle="modal" id="rerun" data-target="#rerunModal" disabled></button>
+          {% endif %}
+
+      </div>
+      <div class="btn-group">
+      {% if isqa == True %}
+        <button class="btn  btn-default" style="margin-right:3px" id="startTest2" onclick="startTest2()">Start T2</button>
+        <button class="btn  btn-default" style="margin-right:3px" id="Accept" onclick="">Accept</button>
+        <button class="btn  btn-default" style="margin-right:3px" id="Refuse" onclick="refuse()">Refuse</button>
+      {% endif %}
+      </div>
+
+
+    </div>
+      <div  id="taskinfo" hidden="hidden" style="padding-top:10px;">
+        <table class="table table-hover">
+          <tr><td>***STATUS:</td><td>{% if task.status == 0 %}To Do {% elif task.status == 1 %} Doing{% else%} Done{% endif %}</td></tr>
+          <tr><td>***WHO CREATE:</td><td>{{task.account}}</td></tr>
+          <tr><td>***WHEN START:</td><td>{{task.begin_time}}</td></tr>
+          <tr><td>***WHERE'S GIT:</td><td>{{gitroot}}\{{task.git_dir}}</td></tr>
+          <tr><td>***WHAT'S OBJECT:</td><td>{% if task.is_ideas == 0 %}Ideas{% elif task.is_ideas == 1 %} iAR{% else%} unknown{% endif %}</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!--<button onclick="test()">button</button>-->
+
+    <div class="col-md-6">
+      <table class="table table-hover">
+        <thead>
+            <tr>
+                <th  colspan="1" rowspan="1">Result</th>
+                <th  colspan="1" rowspan="1">Subtask Name</th>
+                <th  colspan="1" rowspan="1">Hash</th>
+                <!--<th  colspan="1" rowspan="1">Begin Time</th>-->
+                <!--<th  colspan="1" rowspan="1">Git Dir</th>-->
+                <th  colspan="1" rowspan="1">Duration</th>
+                <th  colspan="1" rowspan="1">Action</th>
+                <!--<th  colspan="1" rowspan="1">Current Stage</th>-->
+                <!--<th  colspan="1" rowspan="1">isIdeas</th>-->
+                <!--<th  colspan="1" rowspan="1">backuppath</th>-->
+                <!--<th  colspan="1" rowspan="1">detail</th>-->
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for sub in subs %}
+                <tr  id="{{sub.name}}"{% if sub.result =='FAILURE' %} class="danger"{% else %}{% endif %}>
+                    <td><span   {% if sub.result =='SUCCESS' %}class="glyphicon glyphicon-ok" title="Ok" {% elif sub.result =='FAILURE' %} class="glyphicon glyphicon-remove" title="Failed"{% elif sub.status is equalto 1 %}class="glyphicon glyphicon-flash blink" title="Running"{% elif sub.status is equalto 0 %}class="glyphicon glyphicon-headphones" title="Wait" {% else%} class="glyphicon glyphicon-ban-circle" title="Aborted"{% endif %} ></span></td>
+                    <td><a  {% if sub.result_link is equalto None %} target="_self" title="no link now" {% else %} href ='{{sub.result_link}}'title="link" target="_blank"{% endif %}>{{sub.name}}</a></td>
+                    <!--<td>{{task.git_dir}}</td>-->
+                    <!--<td>{{sub.assign_time}}</td>-->
+                    <!--<td>{{task.is_test2}}</td>-->
+                    <!--<td>{{task.is_ideas}}</td>-->
+                    <!--<td>{{task.backup_path}}</td>-->
+                    <td><a data-toggle="collapse" id="{{sub.name}}_hash"  href="#hash_collapse" aria-expanded="true" aria-controls="collapseOne" onclick="readGitLog(this.textContent)">{{sub.hash_value}}</a></td>
+                    <td>{% if sub.trigger_time is not equalto None %}{{duration_from(sub.trigger_time)}}{% else %}&nbsp{% endif %}</td>
+                    <td>
+                      {% if isself == True %}
+                      <!--<button class="btn btn-sm btn-default glyphicon glyphicon-repeat" title="Rerun"  onclick="rerun('{{sub.name}}')"></button>-->
+                      <button class="btn btn-sm btn-default" title="Rerun"  onclick="rerun('{{sub.name}}')">Re-run</button>
+                      <button class="btn btn-sm btn-default glyphicon glyphicon-stop"  title="Abort" onclick="stop('{{sub.name}}')"></button>
+                      {% else %}
+                      <!--<button class="btn btn-sm btn-default glyphicon glyphicon-repeat" title="Rerun"  onclick="rerun('{{sub.name}}')" disabled></button>-->
+                      <button  class="btn btn-sm btn-default" title="Rerun"  onclick="rerun('{{sub.name}}')" disabled>Re-run</button>
+                      <button class="btn btn-sm btn-default glyphicon glyphicon-stop"  title="Abort" onclick="stop('{{sub.name}}')" disabled></button>
+                      {% endif %}
+                    </td>
+
+                </tr>
+            {% endfor %}
+
+        </tbody>
+      </table>
+      <div id="hash_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+        <table id="readhashright" class="table table-hover" hiden="true">
+          <tr><td style="width:30%">***HASH:</td><td id="hash"></td></tr>
+          <tr><td >***WHEN COMMIT:</td><td id="committime"></td></tr>
+          <tr><td>***AUTHOR:</td><td id="author"></td></tr>
+          <tr><td >***COMMIT LOG:</td><td id="commitlog"></td></tr>
+        </table>
+        <p id="readhasherror" hidden="true"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="AddModalLabel">SubTasks can be selected</h4>
+      </div>
+      <div class="modal-body">
+        <div id="addpanel">
+          {% if unchecksubs %}
+            {% for name in unchecksubs %}
+            <input class="subtask" id="{{name}}" name="addsubcheckbox" type="checkbox" value="{{name}}"><label for="{{name}}">{{name}}</label>
+            {% endfor %}
+          {% else %}
+             <p>No subtasks to select!</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        {% if unchecksubs %}
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addsubtasks()">Submit</button>
+        {% else %}
+        <button type="button" class="btn btn-primary" data-dismiss="modal" disabled="disabled" onclick="addsubtasks()">Submit</button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Confirm Cancel Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="confirmModalLabel">Tips</h4>
+      </div>
+      <div class="modal-body" id="confirmcancel">
+
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary " href="{{ url_for('user.index', username=current_user.user_name) }}" role="button">OK</a>
+        <!--<button type="button" class="btn btn-default" data-dismiss="modal">OK</button>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm  Modal 1 -->
+<div class="modal fade" id="confirmModalstay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" >Tips</h4>
+      </div>
+      <div class="modal-body" id="confirmStay">
+
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary " href="{{url_for('user.task',track_number=task.track_number)}}" role="button">OK</a>
+        <!--<button type="button" class="btn btn-default" data-dismiss="modal">OK</button>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cancel Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="cancelModalLabel">Warning</h4>
+      </div>
+      <div class="modal-body">
+        Delete will delete all the data, are you sure?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No,let me consider</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteTask()">Yes, I'll delete it</button>
+
+        <!--<button type="button" class="btn  btn-danger glyphicon glyphicon-trash"  title="Test Task" style="margin-right:3px" data-dismiss="modal" onclick="deleteTask()"></button>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Rerun Modal -->
+<div class="modal fade" id="rerunModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="rerunModalLabel">Warning</h4>
+      </div>
+      <div class="modal-body">
+        Rerun will run all the subtasks again, are you sure?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No,let me consider</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="rerun('')">Yes, I'll rerun all</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('user.static',filename='js/task.js') }}"></script>
+<script src="{{ url_for('user.static',filename='js/sub_dependency.js') }}"></script>
+<script>
+  $(document).ready(function(){
+    $("#taskdetail").click(function(){
+      $("#taskinfo").toggle();
+    });
+  });
+
+
+function test(){
+  var track = document.getElementById("track").innerHTML;
+  var ajaxRequest;
+
+  if (window.XMLHttpRequest)
+     {// code for IE7+, Firefox, Chrome, Opera, Safari
+        ajaxRequest=new XMLHttpRequest();
+     }
+    else
+     {// code for IE6, IE5
+       ajaxRequest=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+
+  ajaxRequest.open("POST", "/user/refresh_subtasks", true);
+  ajaxRequest.setRequestHeader('content-type', 'application/json');
+
+  ajaxRequest.onreadystatechange = function() {
+    if (ajaxRequest.readyState == 4) {
+      //根据服务器的响应内容格式处理响应结果
+      var subs = JSON.parse(ajaxRequest.responseText);
+
+      for(i=0;i<subs.length;i++)
+      {
+
+          //span
+          var logo_ele = document.getElementById(subs[i].name).cells[0].firstChild;
+          //a:result_link
+          var href_ele = document.getElementById(subs[i].name).cells[1].firstChild;
+          //tr
+          row_ele = document.getElementById(subs[i].name);
+          //a:hash_value
+          var hash_a_ele = document.getElementById(subs[i].name).cells[2].firstChild;
+
+
+
+          // add link
+          if(subs[i].result_link != null){
+            href_ele.setAttribute("href",subs[i].result_link);
+            href_ele.title = "link";
+          }
+          // add hash_value
+          if(subs[i].hash_value != null){
+            hash_a_ele.textContent = subs[i].hash_value;
+          }
+
+          // change logo by status
+          if(subs[i].status == 0){
+            logo_ele.className="glyphicon glyphicon-headphones";
+            logo_ele.title = "Waiting";
+          }else if(subs[i].status == 1){
+            logo_ele.className="glyphicon glyphicon-flash blink";
+            logo_ele.title = "Running";
+          }else if(subs[i].status == 2){
+              //change status by result
+              if(subs[i].result == "SUCCESS")
+              {
+                //document.getElementById(subs[i].name).cells[0].getElementsByTagName("span")[0].className="glyphicon glyphicon-ok";  // works
+                logo_ele.className="glyphicon glyphicon-ok";  // also works
+                logo_ele.title = "Success"
+
+                //alert(str);
+              }else if(subs[i].result == "FAILURE"){
+                row_ele.className = "danger";
+                logo_ele.className="glyphicon glyphicon-remove";
+                logo_ele.title = "Failed";
+              }  //end of result if
+
+          }else if(subs[i].status ==3){
+            logo_ele.className = "glyphicon glyphicon-ban-circle";
+            logo_ele.title = "Aborted";
+          }  // end of status condition if
+
+      }  // end of for
+
+
+    }  // end of if (ajaxRequest.readyState == 4)
+
+  }  // end of ajaxRequest.onreadystatechange = function
+
+  var obj = {track:track};
+  ajaxRequest.send(JSON.stringify(obj));
+  return;
+
+} //end of test
+
+
+var myVar = setInterval(test, 60000);
+
+
+</script>
+{% endblock%}
+
+
