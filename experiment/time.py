@@ -31,7 +31,16 @@ ifstt = int(fstt)
 print ifstt
 print type(ifstt)
 
+print 'current_time'
+print current_time
 back = time.strptime(current_time,time_stamp_format)
+print 'back'
+print back
+test = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
+print 'test'
+print test
+print int(time.mktime(back))
+print time.time()
 # time.sleep(10)
 # test = time.localtime(time.time()) - back
 # print test
@@ -63,7 +72,7 @@ print duration_form(3600+72)
 
 
 
-
+print int(1.2)
 
 
 

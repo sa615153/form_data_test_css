@@ -16,6 +16,9 @@
   #addpanel{
   display:block;
   }
+
+
+
   @keyframes blink{
     0%{opacity: 1;}
     50%{opacity: 1;}
@@ -104,18 +107,43 @@
 
 
     </div>
-      <div  id="taskinfo" hidden="hidden" style="padding-top:10px;">
-        <table class="table table-hover">
+      <div  id="taskinfo"  style="padding-top:10px;">
+        <table class="table table-hover" id="task_info_table">
           <tr><td>***STATUS:</td><td>{% if task.status == 0 %}To Do {% elif task.status == 1 %} Doing{% else%} Done{% endif %}</td></tr>
           <tr><td>***WHO CREATE:</td><td>{{task.account}}</td></tr>
           <tr><td>***WHEN START:</td><td>{{task.begin_time}}</td></tr>
           <tr><td>***WHERE'S GIT:</td><td>{{gitroot}}\{{task.git_dir}}</td></tr>
           <tr><td>***WHAT'S OBJECT:</td><td>{% if task.is_ideas == 0 %}Ideas{% elif task.is_ideas == 1 %} iAR{% else%} unknown{% endif %}</td></tr>
+          <tr><td>***BENCH MARK</td><td>
+                                            {% if get_benchmark(task.track_number) == "404" %}
+                                            <span id="current_benchmark">no lib calc subtasks</span>
+                                            {% else %}
+                                             <span id="current_benchmark">{{get_benchmark(task.track_number)}} </span>
+                                             &nbsp<button onclick="change_benchmark()" class="btn btn-sm btn-default" style="background-color:#eee">change</button> <br>
+
+                                            {% endif %}
+
+                                   </td></tr>
+            <tr>
+                <td colspan="2">
+                    <div id="change_benchmark_div" hidden="hidden" >
+                         <input class="subtaskcheckbox form-control" id="ideas_lib_calc_benchmark" name="ideas_lib_calc_benchmark"
+                               list="avaliable_benchmarks" placeholder="benchmark, leave it blank if using the latest"
+                               type="text" value style="">
+                        <datalist id="avaliable_benchmarks">
+                        </datalist>
+                        <button id="cancel_change" onclick="show_panel()">cancel</button>
+                        <button id="submit" onclick="submit_benchmark()"type="button">submit</button>
+                     </div>
+                </td>
+            </tr>
+
         </table>
       </div>
     </div>
-
-    <!--<button onclick="test()">button</button>-->
+<!----------------------------------------------------------------------------testButton-------------------------------------------------------------------------------------->
+    <button id ='testbutton' onclick="refresh()">button</button>
+<!----------------------------------------------------------------------------testButton-------------------------------------------------------------------------------------->
 
     <div class="col-md-6">
       <table class="table table-hover">
@@ -138,15 +166,36 @@
         <tbody>
             {% for sub in subs %}
                 <tr  id="{{sub.name}}"{% if sub.result =='FAILURE' %} class="danger"{% else %}{% endif %}>
-                    <td><span   {% if sub.result =='SUCCESS' %}class="glyphicon glyphicon-ok" title="Ok" {% elif sub.result =='FAILURE' %} class="glyphicon glyphicon-remove" title="Failed"{% elif sub.status is equalto 1 %}class="glyphicon glyphicon-flash blink" title="Running"{% elif sub.status is equalto 0 %}class="glyphicon glyphicon-headphones" title="Wait" {% else%} class="glyphicon glyphicon-ban-circle" title="Aborted"{% endif %} ></span></td>
-                    <td><a  {% if sub.result_link is equalto None %} target="_self" title="no link now" {% else %} href ='{{sub.result_link}}'title="link" target="_blank"{% endif %}>{{sub.name}}</a></td>
+                    <td><span
+                            {% if sub.result =='SUCCESS' %}class="glyphicon glyphicon-ok" title="Ok"
+                            {% elif sub.result =='FAILURE' %} class="glyphicon glyphicon-remove" title="Failed"
+                            {% elif sub.status is equalto 1 %}class="glyphicon glyphicon-flash blink" title="Running"
+                            {% elif sub.status is equalto 0 %}class="glyphicon glyphicon-headphones" title="Wait"
+                            {% else%} class="glyphicon glyphicon-ban-circle" title="Aborted"
+                            {% endif %} >
+                    </span></td>
+                    <td><a  {% if sub.result_link is equalto None %} target="_self" title="no link now"
+                            {% else %} href ='{{sub.result_link}}'title="link" target="_blank"
+                            {% endif %}>{{sub.name}}</a></td>
                     <!--<td>{{task.git_dir}}</td>-->
                     <!--<td>{{sub.assign_time}}</td>-->
                     <!--<td>{{task.is_test2}}</td>-->
                     <!--<td>{{task.is_ideas}}</td>-->
                     <!--<td>{{task.backup_path}}</td>-->
-                    <td><a data-toggle="collapse" id="{{sub.name}}_hash"  href="#hash_collapse" aria-expanded="true" aria-controls="collapseOne" onclick="readGitLog(this.textContent)">{{sub.hash_value}}</a></td>
-                    <td>{% if sub.trigger_time is not equalto None %}{{duration_from(sub.trigger_time)}}{% else %}&nbsp{% endif %}</td>
+                    <td><a data-toggle="collapse" id="{{sub.name}}_hash"  href="#hash_collapse" aria-expanded="true"
+                           aria-controls="collapseOne" onclick="readGitLog(this.textContent)">
+                           {{sub.hash_value}}
+                    </a></td>
+                    <td>{% if sub.status != 2 and sub.status != 3 %}
+                            {% if sub.trigger_time is not equalto None %}
+                               {{duration_from(sub.trigger_time)}}
+                            {% else %}
+                               &nbsp
+                            {% endif %}
+                        {% else %}
+                             {{duration(sub.trigger_time,sub.finish_time)}}
+                        {% endif %}
+                    </td>
                     <td>
                       {% if isself == True %}
                       <!--<button class="btn btn-sm btn-default glyphicon glyphicon-repeat" title="Rerun"  onclick="rerun('{{sub.name}}')"></button>-->
@@ -160,10 +209,102 @@
                     </td>
 
                 </tr>
+              {% if sub.property.tag == "E" %}
+
+              {% endif %}
             {% endfor %}
 
         </tbody>
       </table>
+
+      <div id = "ict_subs" hidden="hidden" style="padding-left:5em;">
+      <!-- <table id="ict_sub_tables" class="table table-hover"> -->
+      <!-- <table id="ict_sub_tables"   class="table table-hover table-condensed"> -->
+      <table id="ict_sub_table"   class="" >
+          <!--<thead>-->
+            <!--<tr>-->
+                <!--<th  colspan="1" rowspan="1">Result</th>-->
+                <!--<th  colspan="2" rowspan="1">Subtask Name</th>-->
+
+                <!--<th  colspan="2" rowspan="1">Duration</th>-->
+                <!--<th  colspan="2" rowspan="1">Action</th>-->
+
+
+            <!--</tr>-->
+        <!--</thead>-->
+
+
+
+
+      {% for ict_sub in ict_subs %}
+      <tr  id="{{ict_sub.name}}"{% if ict_sub.result =='FAILURE' %} class="danger"{% else %}{% endif %} >
+          <td style="text-align:left;border-left: 1px solid #ddd;">-------&nbsp<span
+                  {% if ict_sub.result =='SUCCESS' %}class="glyphicon glyphicon-ok" title="Ok"
+                  {% elif ict_sub.result =='FAILURE' %} class="glyphicon glyphicon-remove" title="Failed"
+                  {% elif ict_sub.status is equalto 1 %}class="glyphicon glyphicon-flash blink" title="Running"
+                  {% elif ict_sub.status is equalto 0 %} class="glyphicon glyphicon-headphones" title="Wait"
+                  {% else%} class="glyphicon glyphicon-ban-circle" title="Aborted"{% endif %} >
+          </span></td>
+          <td style="text-align:left;"><a  {% if ict_sub.result_link is equalto None %} target="_self" title="no link now"
+                  {% else %} href ='{{ict_sub.result_link}}'title="link" target="_blank"
+                  {% endif %}>{{ict_sub.name}}
+          </a></td>
+          <!--<td>{{task.git_dir}}</td>-->
+          <!--<td>{{ict_sub.assign_time}}</td>-->
+          <!--<td>{{task.is_test2}}</td>-->
+          <!--<td>{{task.is_ideas}}</td>-->
+          <!--<td>{{task.backup_path}}</td>-->
+
+          <!--
+          <td><a data-toggle="collapse" id="{{ict_sub.name}}_hash"  href="#hash_collapse" aria-expanded="true"
+                 aria-controls="collapseOne" onclick="readGitLog(this.textContent)">
+                 {{ict_sub.hash_value}}
+          </a></td>
+          -->
+
+          <td class="last-2td">{% if ict_sub.status != 2 and ict_sub.status != 3 %}
+                  {% if ict_sub.trigger_time is not equalto None %}
+                     {{duration_from(ict_sub.trigger_time)}}
+                  {% else %}
+                     &nbsp
+                  {% endif %}
+              {% else %}
+                   {{duration(ict_sub.trigger_time,ict_sub.finish_time)}}
+              {% endif %}
+          </td>
+          <td class="last-td">
+              <div style="" class="opt" >
+            {% if isself == True %}
+
+
+
+            <button class="btn btn-sm btn-default" title="Rerun"  onclick="rerun('{{ict_sub.name}}')"
+                    {% if  ict_sub.name == "calc_iTReport" or ict_sub.name == "calc_FinalReport" %}
+                    &nbsp
+                    {% else %}
+                     disabled
+                   {% endif %}
+            >Re-run</button>
+            <button class="btn btn-sm btn-default glyphicon glyphicon-stop"  title="Abort" onclick="stop('{{ict_sub.name}}')"></button>
+            {% else %}
+
+            <button  class="btn btn-sm btn-default" title="Rerun"  onclick="rerun('{{ict_sub.name}}')" disabled>Re-run</button>
+            <button class="btn btn-sm btn-default glyphicon glyphicon-stop"  title="Abort" onclick="stop('{{ict_sub.name}}')" disabled></button>
+            {% endif %}
+                  </div>
+          </td>
+
+      </tr>
+      {% endfor %}
+
+      </table>
+      </div>
+
+
+
+
+
+
       <div id="hash_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
         <table id="readhashright" class="table table-hover" hiden="true">
           <tr><td style="width:30%">***HASH:</td><td id="hash"></td></tr>
@@ -203,6 +344,11 @@
         {% else %}
         <button type="button" class="btn btn-primary" data-dismiss="modal" disabled="disabled" onclick="addsubtasks()">Submit</button>
         {% endif %}
+
+          <div>
+
+          </div>
+
       </div>
     </div>
   </div>
@@ -225,6 +371,28 @@
     </div>
   </div>
 </div>
+
+
+<!--benchmark confirm modal-->
+<div class="modal fade" id="benchmark_confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="benchmark_confirmModal_title">Tips</h4>
+      </div>
+      <div class="modal-body" id="message">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+        <!--<button type="button" class="btn btn-default" data-dismiss="modal">OK</button>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <!-- Confirm  Modal 1 -->
 <div class="modal fade" id="confirmModalstay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -266,6 +434,42 @@
   </div>
 </div>
 
+
+
+<!-- rerun ict Modal -->
+<div class="modal fade" id="rerun_ict_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="rerun_ict_Modal_label" STYLE="color:red">Warning</h4>
+      </div>
+      <div class="modal-body">
+        You really want to re-run Ideas-lib-calc ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary " data-dismiss="modal" onclick="rerun('ideas_lib_calc')" style=" background-color:red;">YES,RERUN</button>
+
+        <!--<button type="button" class="btn  btn-danger glyphicon glyphicon-trash"  title="Test Task" style="margin-right:3px" data-dismiss="modal" onclick="deleteTask()"></button>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- Rerun Modal -->
 <div class="modal fade" id="rerunModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -284,6 +488,8 @@
     </div>
   </div>
 </div>
+
+
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('user.static',filename='js/task.js') }}"></script>
@@ -295,94 +501,36 @@
     });
   });
 
+  $(document).ready(function(){
+    $("#ideas_lib_calc").click(function(){
+      $("#ict_subs").toggle();
+    });
+  });
+function duration_from(trigger_time){
+  //to int
+  //compute
+  //to string
+  var d = new Date()
+  var miliseconds = d.getTime()
+  var f_now_seconds = d/1000;
+  var int_now_second = parseInt(f_now_seconds)
 
-function test(){
-  var track = document.getElementById("track").innerHTML;
-  var ajaxRequest;
+  var int_trigger_time_second = parseInt(trigger_time);
 
-  if (window.XMLHttpRequest)
-     {// code for IE7+, Firefox, Chrome, Opera, Safari
-        ajaxRequest=new XMLHttpRequest();
-     }
-    else
-     {// code for IE6, IE5
-       ajaxRequest=new ActiveXObject("Microsoft.XMLHTTP");
-      }
+  var seconds = int_now_second - int_trigger_time_second;
 
-  ajaxRequest.open("POST", "/user/refresh_subtasks", true);
-  ajaxRequest.setRequestHeader('content-type', 'application/json');
+  var h = parseInt(seconds/3600);
+  var m = parseInt((seconds - h*3600)/60);
+  var s = parseInt(seconds%60);
 
-  ajaxRequest.onreadystatechange = function() {
-    if (ajaxRequest.readyState == 4) {
-      //根据服务器的响应内容格式处理响应结果
-      var subs = JSON.parse(ajaxRequest.responseText);
-
-      for(i=0;i<subs.length;i++)
-      {
-
-          //span
-          var logo_ele = document.getElementById(subs[i].name).cells[0].firstChild;
-          //a:result_link
-          var href_ele = document.getElementById(subs[i].name).cells[1].firstChild;
-          //tr
-          row_ele = document.getElementById(subs[i].name);
-          //a:hash_value
-          var hash_a_ele = document.getElementById(subs[i].name).cells[2].firstChild;
+  return  {str:h + "h " + m + "m " + s + "s",h:h};
+}
 
 
 
-          // add link
-          if(subs[i].result_link != null){
-            href_ele.setAttribute("href",subs[i].result_link);
-            href_ele.title = "link";
-          }
-          // add hash_value
-          if(subs[i].hash_value != null){
-            hash_a_ele.textContent = subs[i].hash_value;
-          }
+var myVar = setInterval(refresh, 60000);
 
-          // change logo by status
-          if(subs[i].status == 0){
-            logo_ele.className="glyphicon glyphicon-headphones";
-            logo_ele.title = "Waiting";
-          }else if(subs[i].status == 1){
-            logo_ele.className="glyphicon glyphicon-flash blink";
-            logo_ele.title = "Running";
-          }else if(subs[i].status == 2){
-              //change status by result
-              if(subs[i].result == "SUCCESS")
-              {
-                //document.getElementById(subs[i].name).cells[0].getElementsByTagName("span")[0].className="glyphicon glyphicon-ok";  // works
-                logo_ele.className="glyphicon glyphicon-ok";  // also works
-                logo_ele.title = "Success"
-
-                //alert(str);
-              }else if(subs[i].result == "FAILURE"){
-                row_ele.className = "danger";
-                logo_ele.className="glyphicon glyphicon-remove";
-                logo_ele.title = "Failed";
-              }  //end of result if
-
-          }else if(subs[i].status ==3){
-            logo_ele.className = "glyphicon glyphicon-ban-circle";
-            logo_ele.title = "Aborted";
-          }  // end of status condition if
-
-      }  // end of for
-
-
-    }  // end of if (ajaxRequest.readyState == 4)
-
-  }  // end of ajaxRequest.onreadystatechange = function
-
-  var obj = {track:track};
-  ajaxRequest.send(JSON.stringify(obj));
-  return;
-
-} //end of test
-
-
-var myVar = setInterval(test, 60000);
+window.onload = refresh();
 
 
 </script>
