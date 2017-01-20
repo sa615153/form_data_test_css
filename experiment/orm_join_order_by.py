@@ -7,3 +7,5 @@ for s in subs:
     print s.name
 session.commit()
 session.close()
+
+default_benchmark = session.query(Benchmark).order_by(Benchmark.checkin_time.desc()).first()

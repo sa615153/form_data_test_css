@@ -33,12 +33,15 @@ print type(ifstt)
 
 print 'current_time'
 print current_time
+
+current_time = '20161228173432'
 back = time.strptime(current_time,time_stamp_format)
 print 'back'
 print back
 test = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
 print 'test'
 print test
+print "int(time.mktime(back))"
 print int(time.mktime(back))
 print time.time()
 # time.sleep(10)
